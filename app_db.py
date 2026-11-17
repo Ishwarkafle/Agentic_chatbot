@@ -87,12 +87,21 @@ if st.session_state.active_chat_id is None:
 current_chat_id = st.session_state.active_chat_id
 
 # Configuration tells LangGraph which conversation to use
-CONFIG = {
-    "configurable": {
-        "thread_id": current_chat_id
-    }
-}
+                # CONFIG = {
+                #     "configurable": {
+                #         "thread_id": current_chat_id
+                #     }
+                # }
+# For debugging purposes, you can display the current chat ID in langsmith. This is optional and can be removed in production.  
 
+
+CONFIG = {
+    "configurable": {"thread_id": current_chat_id},
+    "metadata": {
+        "thread_id": current_chat_id
+    },
+    "run_name": "chat_trace",
+}
 
 # -----------------------------
 # DISPLAY OLD MESSAGES

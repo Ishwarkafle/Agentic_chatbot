@@ -4,3 +4,5 @@ langchain-groq
 langchain-openai
 streamlit
 langgraph-checkpoint-sqlite
+langchain_tavily
+tavily-python
