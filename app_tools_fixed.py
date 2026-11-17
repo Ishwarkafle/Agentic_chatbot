@@ -21,9 +21,10 @@ import uuid
 # -----------------------------
 
 # Generate a unique ID for every conversation
+# CHANGED: the ID now starts with the username
 def generate_thread_id():
 
-    return str(uuid.uuid4())
+    return f"{username}__{uuid.uuid4()}"
 
 
 # Add a thread to the conversation list
@@ -34,7 +35,7 @@ def add_thread(thread_id):
         st.session_state["chat_threads"].append(thread_id)
 
 
-# Create a new conversations
+# Create a new conversation
 def reset_chat():
 
     st.session_state["thread_id"] = generate_thread_id()
@@ -71,6 +72,20 @@ st.title("Agentic Chatbot with LangGraph")
 
 
 # -----------------------------
+# USERNAME
+# -----------------------------
+
+# CHANGED: new block, asks for a name before anything else runs
+username = st.sidebar.text_input("Your name").strip().lower()
+
+if not username:
+
+    st.info("Enter your name in the sidebar to start.")
+
+    st.stop()
+
+
+# -----------------------------
 # SESSION STATE
 # -----------------------------
 
@@ -84,9 +99,12 @@ if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = generate_thread_id()
 
 
+# CHANGED: only load this user's conversations
 if "chat_threads" not in st.session_state:
 
-    st.session_state["chat_threads"] = get_all_threads()
+    st.session_state["chat_threads"] = [
+        t for t in get_all_threads() if t.startswith(f"{username}__")
+    ]
 
 
 # Add the current conversation to the list
