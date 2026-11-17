@@ -6,3 +6,4 @@ streamlit
 langgraph-checkpoint-sqlite
 langchain_tavily
 tavily-python
+langchain-google-genai

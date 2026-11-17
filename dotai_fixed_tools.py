@@ -24,14 +24,20 @@ import os
 # Load environment variables from .env
 load_dotenv()
 
+from langchain_groq import ChatGroq
 
-# Initialize LLM
-llm = ChatOpenAI(
-    model="auto",
-    base_url="http://127.0.0.1:31415/v1",
-    api_key=os.getenv("FREELLMAPI_API_KEY"),
+llm = ChatGroq(
+    model="openai/gpt-oss-120b",
+    api_key=os.getenv("GROQ_API_KEY"),
     temperature=0
 )
+# Initialize LLM
+# llm = ChatOpenAI(
+#     model="auto",
+#     base_url="http://127.0.0.1:31415/v1",
+#     api_key=os.getenv("FREELLMAPI_API_KEY"),
+#     temperature=0
+# )
 
 
 
@@ -52,11 +58,18 @@ search_tool = TavilySearch(
 # Calculator tool
 @tool
 def calculator(expression: str) -> str:
+    
+    """Evaluate a math expression and return the numeric result.
+
+    Use for ANY arithmetic, even simple ones. LLMs get big numbers wrong.
+    Input must be a single valid Python expression.
+    - Use ** for powers, NOT ^ (in Python, ^ means XOR and gives wrong answers).
+    - Use math.sqrt(), math.sin(), etc. for functions.
+    - Do not use variables or words, only numbers and operators.
+
+    Examples: 98 + 78237 * 9813**2, math.sqrt(144), (15 / 100) * 2400
     """
-    Useful for simple math calculations.
-    Input should be a valid math expression.
-    Example: 2 + 2, math.sqrt(16), 10 * 5
-    """
+        
 
     try:
         allowed = {
@@ -83,10 +96,17 @@ def calculator(expression: str) -> str:
 # Stock price tool
 @tool
 def get_stock_price(symbol: str) -> dict:
-    """
-    Fetch the latest stock price for a given symbol.
-    Examples: AAPL, TSLA.
-    """
+    """Get the latest stock quote for a ticker symbol.
+
+        Use only when the user asks for a stock's price or daily change.
+        Input: the ticker symbol only (e.g. AAPL, TSLA, MSFT), not a company name.
+        If the user gives a company name, convert it to its ticker first.
+
+        Returns raw quote data. Report the price ('05. price'), the change
+        ('09. change') and the percent change ('10. change percent').
+        If the result is empty or contains an error or rate-limit message,
+        tell the user. Do not retry.
+        """
 
     api_key = os.getenv("ALPHAVANTAGE_API_KEY")
 
