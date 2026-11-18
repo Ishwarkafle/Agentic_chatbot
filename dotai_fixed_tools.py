@@ -1,6 +1,4 @@
-# -----------------------------
 # IMPORTS
-# -----------------------------
 
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.sqlite import SqliteSaver
@@ -41,9 +39,7 @@ llm = ChatGroq(
 
 
 
-# -----------------------------
 # TOOLS
-# -----------------------------
 
 # Tavily searches the internet
 search_tool = TavilySearch(
@@ -265,9 +261,8 @@ def get_current_weather(location: str) -> str:
         return f"Unexpected weather API response: {error}"
 
 
-# -----------------------------
 # MAKE TOOL LIST
-# -----------------------------
+
 
 tools = [
     search_tool,
@@ -281,18 +276,14 @@ tools = [
 llm_with_tools = llm.bind_tools(tools)
 
 
-# -----------------------------
 # CHATBOT STATE
-# -----------------------------
 
 class ChatState(TypedDict):
 
     messages: Annotated[list[BaseMessage], add_messages]
 
 
-# -----------------------------
 # CHAT NODE
-# -----------------------------
 
 def chat_node(state: ChatState):
 
@@ -327,16 +318,12 @@ def chat_node(state: ChatState):
     return {"messages": [response]}
 
 
-# -----------------------------
 # TOOL NODE
-# -----------------------------
 
 tool_node = ToolNode(tools)
 
 
-# -----------------------------
 # SQLITE CHECKPOINTER
-# -----------------------------
 
 conn = sqlite3.connect(
     database="chatbot.db",
@@ -349,9 +336,7 @@ checkpoint = SqliteSaver(conn)
 checkpoint.setup()
 
 
-# -----------------------------
 # CREATE LANGGRAPH WORKFLOW
-# -----------------------------
 
 graph = StateGraph(ChatState)
 
@@ -379,9 +364,8 @@ chatbot = graph.compile(
 )
 
 
-# -----------------------------
+
 # GET ALL SAVED THREADS
-# -----------------------------
 
 def get_all_threads():
 

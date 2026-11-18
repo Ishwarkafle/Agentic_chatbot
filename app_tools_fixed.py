@@ -1,6 +1,4 @@
-# -----------------------------
-# IMPORTS
-# -----------------------------
+
 
 from dotai_fixed_tools import chatbot,get_all_threads
 
@@ -16,9 +14,7 @@ import streamlit as st
 import uuid
 
 
-# -----------------------------
-# THREAD FUNCTIONS
-# -----------------------------
+
 
 # Generate a unique ID for every conversation
 # CHANGED: the ID now starts with the username
@@ -59,9 +55,7 @@ def load_conversation(thread_id):
     return state.values.get("messages", [])
 
 
-# -----------------------------
-# PAGE CONFIGURATION
-# -----------------------------
+
 
 st.set_page_config(
     page_title="Agentic Chatbot",
@@ -71,9 +65,7 @@ st.set_page_config(
 st.title("Agentic Chatbot with LangGraph")
 
 
-# -----------------------------
-# USERNAME
-# -----------------------------
+
 
 # CHANGED: new block, asks for a name before anything else runs
 username = st.sidebar.text_input("Your name").strip().lower()
@@ -85,9 +77,8 @@ if not username:
     st.stop()
 
 
-# -----------------------------
 # SESSION STATE
-# -----------------------------
+
 
 if "message_history" not in st.session_state:
 
@@ -111,9 +102,7 @@ if "chat_threads" not in st.session_state:
 add_thread(st.session_state["thread_id"])
 
 
-# -----------------------------
 # SIDEBAR
-# -----------------------------
 
 st.sidebar.title("My Conversations")
 
@@ -165,9 +154,7 @@ for thread_id in st.session_state["chat_threads"][::-1]:
         st.rerun()
 
 
-# -----------------------------
 # DISPLAY CHAT HISTORY
-# -----------------------------
 
 for message in st.session_state["message_history"]:
 
@@ -176,9 +163,7 @@ for message in st.session_state["message_history"]:
         st.markdown(message["content"])
 
 
-# -----------------------------
 # CHAT INPUT
-# -----------------------------
 
 user_input = st.chat_input("Type here")
 
